@@ -1,0 +1,21 @@
+# Folder view configuration files
+.DS_Store
+Desktop.ini
+
+# The actual venv folder
+venv/
+.venv/
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+# My notes
+notes.txt
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+
+#zip
+*.zip

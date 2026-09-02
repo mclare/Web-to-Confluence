@@ -1,67 +1,80 @@
 # CPI Web-to-Confluence Content Mirror
 
-A lightweight Python automation tool developed for Brock University's Centre for Pedagogical Innovation (CPI). This script fetches public WordPress-based web pages, strips layout clutter, and mirrors the core article content into Atlassian Confluence Cloud Space.
+This project mirrors public CPI web pages into a Confluence Cloud space. It fetches a page, strips out site-specific clutter, and creates or updates a matching page in Confluence while keeping a local hash cache to avoid unnecessary updates.
 
-By mirroring public web articles into a dedicated Confluence Space, Jira Service Management (JSM) customer support portals can index public pages, enabling automated "Related Articles" suggestions and search features directly inside support tickets.
+This is useful when public articles need to be searchable and referenced inside Confluence-based support workflows such as Jira Service Management.
 
-## Key Features
+## Features
 
-* Content Cleaning: Parses live HTML using BeautifulSoup to strip site header/footer clutter, scripts, navigation, and broken image containers.
-* Smart Delta Sync (Local Hashing): Generates a SHA-256 hash of the cleaned HTML content (.html_cache/) and compares it before calling Atlassian APIs. If page content hasn't changed, the update is skipped to prevent Confluence page version bloat and save API quota.
-*  Native Confluence Components: Automatically prepends a native Confluence Info Panel macro linking back to the canonical public source page on the CPI website.
-*  REST API Powered: Operates directly against Confluence Cloud's REST API without requiring third-party plugins or site administrator permissions.
+- Pulls pages from a list of URLs in `urls.txt`
+- Uses BeautifulSoup to remove navigation, scripts, styles, and non-content page elements
+- Inserts a Confluence info panel that links back to the original source page
+- Creates or updates Confluence pages using the Confluence REST API
+- Stores a SHA-256 hash for each URL in `.html_cache/` to skip unchanged content
 
-## Setup & Installation
+## Requirements
 
-1. Prerequisites
-  * Python 3.9+ installed.
-  * An Atlassian account with edit permissions in the target Confluence Space (COCWR).
-  * A standard Atlassian API Token generated at id.atlassian.com/manage-profile/security/api-tokens.
+- Python 3.9+
+- Access to the target Confluence Cloud space with permission to create and edit pages
+- A Confluence Cloud account email and API token
 
-2. Environment Setup
+## Setup
 
-  Clone the repository, create a virtual environment, and install dependencies:
-```
-Bash
+1. Clone the repository.
+2. Create and activate a virtual environment:
 
-# Create virtual environment
+```bash
 python3 -m venv .venv
-
-# Activate virtual environment
 source .venv/bin/activate
+```
 
-# Install required packages
+3. Install the dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-3. Configure URLs
+4. Create or update `urls.txt` in the project root. Add one full URL per line:
 
-  Create or edit urls.txt in the root directory and add the full target URLs you wish to mirror (one per line):
-
-```
-Plaintext
-
+```text
 https://brocku.ca/pedagogical-innovation/syllabus-template/
 https://brocku.ca/pedagogical-innovation/course-design-overview/
 ```
 
-## Usage
-```
-Bash
+## Configuration
 
+Set the required environment variables before running the script:
+
+```bash
 export CONFLUENCE_EMAIL="your-email@brocku.ca"
 export CONFLUENCE_API_TOKEN="your_atlassian_api_token"
+```
 
+The script is configured for the Confluence domain `cpibrock.atlassian.net` and space key `COCWR`.
+
+## Usage
+
+Run the script from the repository root:
+
+```bash
 python content_mirror.py
 ```
 
-### Automation via Cron
+If a page has changed, the script updates the matching Confluence page. If the cleaned content is unchanged, it skips the write and preserves version history.
 
-  To run this script automatically on a daily schedule (e.g., every midnight at 00:00), add an entry to your server's crontab:
-```
-Bash
+## Scheduled automation
 
+To run the script daily via cron:
+
+```bash
 0 0 * * * cd /path/to/repo && .venv/bin/python content_mirror.py >> mirror.log 2>&1
 ```
-  (Note: Ensure CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN are defined in your user's crontab environment or loaded from a secured .env file.)
+
+Make sure `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` are available in the cron environment or loaded from a secure secret source.
+
+## Notes
+
+- The script assumes the target page title matches the Confluence page title.
+- The local cache is stored in `.html_cache/` and is not meant to be committed.
+- If `urls.txt` is missing, the script exits with an error.
 
