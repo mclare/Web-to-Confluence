@@ -5,6 +5,10 @@ import sys
 import requests
 from requests.auth import HTTPBasicAuth
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+
+# Load variables from .env file into os.environ
+load_dotenv()
 
 # ==========================================
 # CONFIGURATION

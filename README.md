@@ -49,8 +49,9 @@ Set the required environment variables before running the script:
 export CONFLUENCE_EMAIL="your-email@brocku.ca"
 export CONFLUENCE_API_TOKEN="your_atlassian_api_token"
 ```
+These can optionally be stored in a .env file. load_dotenv() will look for the .env file, and should the script fail to find the .env file, the script will silently (without throwing an error or crashing).
 
-The script is configured for the Confluence domain `cpibrock.atlassian.net` and space key `COCWR`.
+The script is "hard coded" for the Confluence domain `cpibrock.atlassian.net` and space key `COCWR`. Change the code as needed.
 
 ## Usage
 
