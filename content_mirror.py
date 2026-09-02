@@ -91,7 +91,7 @@ def process_url(target_url):
     banner_html = (
         f'<ac:structured-macro ac:name="info" ac:schema-version="1">'
         f'<ac:rich-text-body>'
-        f'<p><em>The full version of this article is available on the CPI website: '
+        f'<p><em>The full version of this article is available on the Brock University website: '
         f'<a href="{target_url}">{page_title}</a>.</em></p>'
         f'</ac:rich-text-body>'
         f'</ac:structured-macro><br/>'
